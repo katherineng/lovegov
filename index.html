@@ -2,18 +2,23 @@
 <html>
     <head>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFrYlHYB3gKOjM-QbsvpLEni2TCds0O3c&sensor=true" type="text/javascript"></script>
-        <script src="public/js/map.js" type="text/javascript"></script>
+        <script type="text/javascript" src="public/js/jquery-1.9.1.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFrYlHYB3gKOjM-QbsvpLEni2TCds0O3c&sensor=false" type="text/javascript"></script>
+        <script type="text/javascript" src="public/js/map.js"></script>
         <link rel="stylesheet" type="text/css" href="public/css/style-base.css" />
     </head>
     <body>
-        <div id="form-container">
-            <form method="POST" action="/location" id="address-form">
-                <input type="text" class="text-field" name="address" id="address-field">
-                <input type="submit" value="search">
-            </form>
+        <div id="page-container">
+            <div id="main-container">
+                <div id="search-container">
+                    <form method="POST" action="/location" id="address-form">
+                        <input type="text" class="text-field" name="address" placeholder="Enter address here" id="address-field">
+                        <input type="submit" value="search" id="search-submit">
+                    </form>
+                    <div id="places-autocomplete"></div>
+                </div>
+                <div id="map-canvas"></div>
+            </div>
         </div>
-        <div id="places-autocomplete" />
-        <div id="map-canvas"/>
     </body>
 </html>
