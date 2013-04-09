@@ -78,7 +78,6 @@ body {
 }
 
 #page-container {
-	border: solid 1px red;
 }
 
 #main-container {
@@ -91,7 +90,6 @@ body {
 #search-container {
 	width: 100%;
 	padding: 30px 0;
-	text-align: center;
 	position: relative;
 }
 
@@ -143,19 +141,19 @@ body {
 	background-color: #0094A3;
 }
 
-#reps {
+#levels {
 	overflow: hidden;
 	height: 35px;
 	white-space: nowrap;
 }
 
-.rep {
+.level {
 	display: inline-block;
 	line-height: 35px;
 	position: relative;
 }
 
-.rep a {
+.level a {
 	display: block;
 	height: 35px;
 	padding: 0 30px;
@@ -164,7 +162,11 @@ body {
 	text-decoration: none;
 }
 
-.rep a.active:after {
+.level a:hover {
+	background-color: #00ABBD;
+}
+
+.level a.active:after {
 	border-left: 6px solid transparent;
 	border-right:6px solid transparent;
 	border-bottom: 6px solid white;
