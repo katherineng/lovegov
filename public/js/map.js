@@ -1,8 +1,9 @@
-var map;
-var geocoder;
-var marker;
-var currLocation;
-var polygons = [];
+var map; // map on which query results are drawn
+var geocoder; // Geocoder object used for reverse geocoding
+var marker; // map marker icon
+var currLocation; // LatLng object of the current location
+var currDistrict; // ID of the selected district
+var polygons = []; // keeps track of polygon objects for removal
 
 function initialize() {
 
@@ -23,7 +24,11 @@ function initialize() {
 	autocomplete.bindTo('bounds', map);
 
 	google.maps.event.addListener(autocomplete, 'place_changed', function() {
-		acSearch(autocomplete.getPlace());
+		if (autocomplete.getPlace().geometry != undefined) {
+			acSearch(autocomplete.getPlace());
+		} else {
+			search();
+		}
 	});
 
 	// instantiate geocoder for reverse geo-coding
@@ -35,6 +40,7 @@ function initialize() {
 	});
 };
 
+// Callback for Autocomplete 'place_changed', analogous to search()
 function acSearch(place) {
 	map.setCenter(place.geometry.location);
 	selectBoundary(place.geometry.location);
@@ -42,11 +48,12 @@ function acSearch(place) {
 	currLocation = place.geometry.location;
 }
 
-function search(e) {
-	e.preventDefault();
+// Called upon submit
+function search() {
 	codeAddress();
 }
 
+// Performs reverse geocoding to find a LatLng given a text query
 function codeAddress() {
 	var address = $('#address-field').val();
 
@@ -61,19 +68,20 @@ function codeAddress() {
 	});
 }
 
-function selectBoundary(location) {
-	if (!location) return;
+// Makes a SQL query depending on desired level of representation
+function selectBoundary() {
+	if (!currLocation) return;
 
 	var level = $('.active').parent()[0].getAttribute('id');
-	var lat = location.lat();
-	var lng = location.lng();
+	var lat = currLocation.lat();
+	var lng = currLocation.lng();
 
 	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
 	
 	if (level == 'senate') {
-		url.push('sql=SELECT name, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
+		url.push('sql=SELECT id, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
 	} else if (level == 'congress') {
-		url.push('sql=SELECT C_STATE, geometry FROM 1QlQxBF17RR-89NCYeBmw4kFzOT3mLENp60xXAJM WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');//C_STATE = \''+ district +'\'');
+		url.push('sql=SELECT * FROM 1QlQxBF17RR-89NCYeBmw4kFzOT3mLENp60xXAJM WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');//C_STATE = \''+ district +'\'');
 	} else if (level == 'state') {
 		
 	} else if (level == 'local') {
@@ -86,27 +94,45 @@ function selectBoundary(location) {
 		url: url.join(''),
 		dataType: 'json',
 		success: function (data) {
-			drawBoundary(data);
+			drawBoundary(data, level);
+			getReps(data, level);
 		}
 
 	});
 }
 
-function drawBoundary(data) {
+// Given the result of a SQL query and the level of representation, draws the district boundaries
+function drawBoundary(data, level) {
 	var rows = data['rows'];
 
-	clearPolygons();
+	clearPolygons(); // clear results of previous search, if any
 
-	if (rows[0][1]['geometry']) {
-		var coordArr = rows[0][1]['geometry']['coordinates'][0];
+	var geometry;
+	var geometries;
+
+	if (level === 'senate') {
+		if (rows[0][1]['geometry'] != undefined) {
+			geometry = rows[0][1]['geometry'];
+		} else {
+			geometries = rows[0][1]['geometries'];
+		}
+
+	} else if (level === 'congress') {
+		if (rows[0][5]['geometry'] != undefined) {
+			geometry = rows[0][5]['geometry'];
+		} else {
+			geometries = rows[0][5]['geometries']
+		}
+	}
+
+
+	if (geometry) {
+		var coordArr = geometry['coordinates'][0];
 		var coords = extractCoords(coordArr);
-
 		drawPolygon(coords);
-
 	} else {
-		var geometries = rows[0][1]['geometries'];
 		for (var i in geometries) {
-			var coordArr = rows[0][1]['geometries'][i]['coordinates'][0];
+			var coordArr = geometries[i]['coordinates'][0];
 			var coords = extractCoords(coordArr);
 
 			drawPolygon(coords);
@@ -116,6 +142,7 @@ function drawBoundary(data) {
 	centerAndZoom();
 }
 
+// Given an array of coordinates, returns an array of coordinates as LatLngs
 function extractCoords(arr) {
 	var coords = [];
 	for (var i in arr) {
@@ -125,20 +152,22 @@ function extractCoords(arr) {
 	return coords;
 }
 
+// Given an array of LatLng coordinates, creates and draws polygons on map
 function drawPolygon(coords) {
 	var polygon = new google.maps.Polygon({
 		paths: coords,
 		strokeColor: '#EF503B',
-		strokeOpacity: 0.8,
-		strokeWeight: 2,
+		strokeOpacity: 0.7,
+		strokeWeight: 3,
 		fillColor: '#EF503B',
 		fillOpacity: 0.2
 	});
 
-	polygons.push(polygon);
+	polygons.push(polygon); // keep track of new polygons
 	polygon.setMap(map);
 }
 
+// Removes and deletes the polygon overlays
 function clearPolygons() {
 	if (polygons.length > 0) {
 		for (var i in polygons) {
@@ -149,6 +178,7 @@ function clearPolygons() {
 	}
 }
 
+// Uses the polygon boundaries to find the appropriate center and zoom level
 function centerAndZoom() {
 	var latlngbounds = new google.maps.LatLngBounds();
 	
@@ -159,11 +189,11 @@ function centerAndZoom() {
 	}
 
 	map.setCenter(latlngbounds.getCenter());
-	map.setZoom(getZoomByBounds(map, latlngbounds));
+	map.setZoom(getZoomByBounds(latlngbounds));
 }
 
-
-function getZoomByBounds(map, bounds){
+// Given the bounds, finds the highest zoom level that fits the entire polygon
+function getZoomByBounds(bounds){
   var MAX_ZOOM = map.mapTypes.get( map.getMapTypeId() ).maxZoom || 21 ;
   var MIN_ZOOM = map.mapTypes.get( map.getMapTypeId() ).minZoom || 0 ;
 
@@ -184,15 +214,35 @@ function getZoomByBounds(map, bounds){
   return 0;
 }
 
+function getReps(data, level) {
+
+	$('#reps').html('');
+
+	if (level == 'senate') {
+		currDistrict = data['rows'][0][0];
+
+		$('#reps').append('<img class="rep" src="public/reps/sheldonwhitehouse.png" />');
+		$('#reps').append('<img class="rep" src="public/reps/johnreed.png" />');
+	} else if (level == 'congress') {
+		currDistrict = data['rows'][0][1] + '-' + data['rows'][0][0];
+
+		$('#reps').append('<img class="rep" src="public/reps/davidcicilline.png" />');
+	}
+
+}
+
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
 $(document).ready(function() {
-	$('#search-submit').click(search);
+	$('#search-submit').click(function(e) {
+		e.preventDefault();
+		search();
+	});
 	$('.level a').click(function(e) {
 		$('.level a').removeClass('active');
 		$(this).addClass('active');
 
-		selectBoundary(currLocation);
+		selectBoundary();
 	});
 });

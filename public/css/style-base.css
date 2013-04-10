@@ -117,17 +117,21 @@ body {
 	width: 100px;
 	margin-left: 10px;
 	padding-top: 5px;
-	border: 1px solid #EF503B;
 	font-family: "Sonus-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 20px;
 	background-color: #EF503B;
 	color: #FFFFFF;
 	border-radius: 5px;
+	border: none;
+	-webkit-transition:background-color 0.2s ease-in;  
+  	-moz-transition:background-color 0.2s ease-in;  
+	-o-transition:background-color 0.2s ease-in;  
+	transition:background-color 0.2s ease-in
+
 }
 
 #search-submit:hover {
 	background-color: #FC8A81;
-	border-color: #FC8A81;
 }
 
 #map-canvas { 
@@ -160,6 +164,10 @@ body {
 	text-align: center;
 	color: #FFFFFF;
 	text-decoration: none;
+	-webkit-transition:background-color 0.1s ease-in;  
+  	-moz-transition:background-color 0.1s ease-in;  
+	-o-transition:background-color 0.1s ease-in;  
+	transition:background-color 0.1s ease-in
 }
 
 .level a:hover {
@@ -177,4 +185,9 @@ body {
 	width: 0;
 	left: 50%;
 	margin-left: -6px;
+}
+
+.rep {
+	display: inline-block;
+	margin: 10px 10px 0 0;
 }
