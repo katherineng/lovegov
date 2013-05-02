@@ -131,20 +131,20 @@ function selectBoundary(reset) {
 		url: url.join(''),
 		dataType: 'json',
 		success: function (data) {
-			drawBoundary(data, level, reset);
-			getReps(data, level);
+			clearPolygons();
+
+			var rows = data['rows'];
+			if (rows !== undefined) {
+				drawBoundary(rows, level, reset);
+				getReps(data, level);
+			}
 		}
 
 	});
 }
 
 // Given the result of a SQL query and the level of representation, draws the district boundaries
-function drawBoundary(data, level, reset) {
-	var rows = data['rows'];
-
-	if (rows === undefined) return;
-
-	clearPolygons(); // clear results of previous search, if any
+function drawBoundary(rows, level, reset) {
 
 	var geometry;
 	var geometries;

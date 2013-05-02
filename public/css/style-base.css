@@ -5,6 +5,11 @@
 /*These are all of the custom fonts you will have to link.*/
 @font-face {
 	font-family: "Sonus-Light";
+	src: url("../fonts/23BAE7_0_0.woff");
+}
+
+@font-face {
+	font-family: "Sonus";
 	src: url("../fonts/23BAE9_0_0.woff");
 }
 
@@ -94,10 +99,10 @@ body {
 	width: 680px;
 	height: 30px;
 	margin: 0;
-	padding-top: 5px;
 	border: 1px solid #ADADAD;
 	font-family: "Sonus-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 20px;
+	line-height: 30px;
 	color: #353535;
 }
 
@@ -113,9 +118,9 @@ body {
 	height: 35px;
 	width: 100px;
 	margin-left: 10px;
-	padding-top: 5px;
-	font-family: "Sonus-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "Sonus", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 20px;
+	line-height: 35px;
 	background-color: #EF503B;
 	color: #FFFFFF;
 	border-radius: 5px;
