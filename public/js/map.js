@@ -25,56 +25,93 @@ function initialize() {
 
 	google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		if (autocomplete.getPlace().geometry != undefined) {
-			acSearch(autocomplete.getPlace());
+			setMap(autocomplete.getPlace().geometry.location, true);
 		} else {
-			search();
+			addressSearch();
 		}
 	});
 
 	// instantiate geocoder for reverse geo-coding
 	geocoder = new google.maps.Geocoder( {region: 'us'} );
 
-	// instantiate map marker
+	// instantiate map marker and bind drag event listener
 	marker = new google.maps.Marker({
-		map: map
+		map: map,
+		draggable: true,
+		animation: google.maps.Animation.DROP
 	});
+
+	google.maps.event.addListener(marker, 'dragend', function(e) {
+		setMap(marker.position, false);
+		$('#address-field').val(marker.position);
+	});
+
+	// add context menu that appears on right click
+	contextMenuSetup();
 };
 
-// Callback for Autocomplete 'place_changed', analogous to search()
-function acSearch(place) {
-	map.setCenter(place.geometry.location);
-	selectBoundary(place.geometry.location);
-	marker.setPosition(place.geometry.location);
-	currLocation = place.geometry.location;
-}
+function contextMenuSetup() {
+	var contextMenuOptions = {};
+	contextMenuOptions.classNames = { menu: 'context_menu', menuSeparator: 'context_menu_separator' };
 
-// Called upon submit
-function search() {
-	codeAddress();
-}
+	var menuItems = [];
+	menuItems.push({ className: 'context_menu_item', eventName: 'set_marker_click', id: 'setMarkerItem', label: 'Set marker' });
+	menuItems.push({});
+	menuItems.push({className:'context_menu_item', eventName:'zoom_in_click', label:'Zoom in'});
+	menuItems.push({className:'context_menu_item', eventName:'zoom_out_click', label:'Zoom out'});
+	menuItems.push({});
+	menuItems.push({className:'context_menu_item', eventName:'center_map_click', label:'Center map here'});
+	contextMenuOptions.menuItems = menuItems;
 
-// Performs reverse geocoding to find a LatLng given a text query
-function codeAddress() {
-	var address = $('#address-field').val();
+	var contextMenu = new ContextMenu(map, contextMenuOptions);
+	google.maps.event.addListener(map, 'rightclick', function(e) {
+		contextMenu.show(e.latLng);
+	});
 
-	geocoder.geocode({ 'address': address}, function(results, status) {
-		if (status == google.maps.GeocoderStatus.OK) {
-			if (results[0]);
-			map.setCenter(results[0].geometry.location);
-			selectBoundary(results[0].geometry.location);
-			marker.setPosition(results[0].geometry.location);
-			currLocation = results[0].geometry.location;
+	google.maps.event.addListener(contextMenu, 'menu_item_selected', function(latLng, eventName){
+		switch(eventName) {
+			case 'set_marker_click':
+				setMap(latLng, false);
+				break;
+			case 'zoom_in_click':
+				map.setZoom(map.getZoom() + 1);
+				break;
+			case 'zoom_out_click':
+				map.setZoom(map.getZoom() - 1);
+				break;
+			case 'center_map_click':
+				map.panTo(latLng);
+				break;
 		}
 	});
 }
 
+// Performs reverse geocoding to find a LatLng given a text query
+function addressSearch() {
+	var address = $('#address-field').val();
+
+	geocoder.geocode({ 'address': address }, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			setMap(results[0].geometry.location, true);
+		}
+	});
+}
+
+// Given a position, updates the current location, boundaries, and marker position
+// If reset boolean is set to true, resets zoom level to fit boundaries
+function setMap(latlng, reset) {
+	currLocation = latlng;
+	selectBoundary(reset);
+	marker.setPosition(latlng);
+}
+
 // Makes a SQL query depending on desired level of representation
-function selectBoundary() {
+function selectBoundary(reset) {
 	if (!currLocation) return;
 
 	var level = $('.active').parent()[0].getAttribute('id');
 	var lat = currLocation.lat();
-	var lng = currLocation.lng();
+	var lng = currLocation.lng();;;;
 
 	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
 	
@@ -94,7 +131,7 @@ function selectBoundary() {
 		url: url.join(''),
 		dataType: 'json',
 		success: function (data) {
-			drawBoundary(data, level);
+			drawBoundary(data, level, reset);
 			getReps(data, level);
 		}
 
@@ -102,8 +139,10 @@ function selectBoundary() {
 }
 
 // Given the result of a SQL query and the level of representation, draws the district boundaries
-function drawBoundary(data, level) {
+function drawBoundary(data, level, reset) {
 	var rows = data['rows'];
+
+	if (rows === undefined) return;
 
 	clearPolygons(); // clear results of previous search, if any
 
@@ -125,7 +164,6 @@ function drawBoundary(data, level) {
 		}
 	}
 
-
 	if (geometry) {
 		var coordArr = geometry['coordinates'][0];
 		var coords = extractCoords(coordArr);
@@ -139,7 +177,9 @@ function drawBoundary(data, level) {
 		}
 	}
 
-	centerAndZoom();
+	if (reset) {
+		centerAndZoom();
+	}
 }
 
 // Given an array of coordinates, returns an array of coordinates as LatLngs
@@ -156,11 +196,12 @@ function extractCoords(arr) {
 function drawPolygon(coords) {
 	var polygon = new google.maps.Polygon({
 		paths: coords,
-		strokeColor: '#EF503B',
+		strokeColor: '#005468',
 		strokeOpacity: 0.7,
 		strokeWeight: 3,
-		fillColor: '#EF503B',
-		fillOpacity: 0.2
+		fillColor: '#005468',
+		fillOpacity: 0.15,
+		clickable: false
 	});
 
 	polygons.push(polygon); // keep track of new polygons
@@ -237,7 +278,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 $(document).ready(function() {
 	$('#search-submit').click(function(e) {
 		e.preventDefault();
-		search();
+		addressSearch();
 	});
 	$('.level a').click(function(e) {
 		$('.level a').removeClass('active');
