@@ -9,6 +9,14 @@ app.use(express.bodyParser());
 app.use('/public', express.static(__dirname + '/public'));
 app.use(express.logger('dev'));
 
+app.get('/boundaries.json') {
+
+}
+
+app.get('/reps.json') {
+	
+}
+
 app.listen(8080, function() {
     console.log('- Server listening on port 8080');
 });

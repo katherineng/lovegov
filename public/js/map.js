@@ -50,16 +50,17 @@ function initialize() {
 	contextMenuSetup();
 };
 
+// Creates context menu, adds menu items, adds events listeners
 function contextMenuSetup() {
 	var contextMenuOptions = {};
 	contextMenuOptions.classNames = { menu: 'context_menu', menuSeparator: 'context_menu_separator' };
 
 	var menuItems = [];
 	menuItems.push({ className: 'context_menu_item', eventName: 'set_marker_click', id: 'setMarkerItem', label: 'Set marker' });
-	menuItems.push({});
+	menuItems.push({}); // separator
 	menuItems.push({className:'context_menu_item', eventName:'zoom_in_click', label:'Zoom in'});
 	menuItems.push({className:'context_menu_item', eventName:'zoom_out_click', label:'Zoom out'});
-	menuItems.push({});
+	menuItems.push({}); // separator
 	menuItems.push({className:'context_menu_item', eventName:'center_map_click', label:'Center map here'});
 	contextMenuOptions.menuItems = menuItems;
 
@@ -111,7 +112,7 @@ function selectBoundary(reset) {
 
 	var level = $('.active').parent()[0].getAttribute('id');
 	var lat = currLocation.lat();
-	var lng = currLocation.lng();;;;
+	var lng = currLocation.lng();
 
 	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
 	
@@ -145,7 +146,6 @@ function selectBoundary(reset) {
 
 // Given the result of a SQL query and the level of representation, draws the district boundaries
 function drawBoundary(rows, level, reset) {
-
 	var geometry;
 	var geometries;
 
