@@ -8,7 +8,7 @@ function RepFinder(map, key, options){
 }
 
 
-RepFinder.prototype.setMap = function(latlng, level, reset) {
+RepFinder.prototype.setMap = function(latlng, level, reset, overlayOptions) {
 	// Makes a SQL query depending on desired level of representation
 	if (!latlng) return;
 	
@@ -38,7 +38,7 @@ RepFinder.prototype.setMap = function(latlng, level, reset) {
 
 			var rows = data['rows'];
 			if (rows !== undefined) {
-				$this.drawBoundary(rows, level, reset);
+				$this.drawBoundary(rows, level, reset, overlayOptions);
 				$this.getReps(data, level);
 			}
 		}
@@ -65,7 +65,7 @@ RepFinder.prototype.getReps = function(data, level) {
 };
 
 // Given the result of a SQL query and the level of representation, draws the district boundaries
-RepFinder.prototype.drawBoundary = function(rows, level, reset) {
+RepFinder.prototype.drawBoundary = function(rows, level, reset, overlayOptions) {
 	
 	// Given an array of coordinates, returns an array of coordinates as LatLngs
 	function extractCoords(arr) {
@@ -98,13 +98,13 @@ RepFinder.prototype.drawBoundary = function(rows, level, reset) {
 	if (geometry) {
 		var coordArr = geometry['coordinates'][0];
 		var coords = extractCoords(coordArr);
-		this.drawPolygon(coords);
+		this.drawPolygon(coords, overlayOptions);
 	} else {
 		for (var i in geometries) {
 			var coordArr = geometries[i]['coordinates'][0];
 			var coords = extractCoords(coordArr);
 
-			this.drawPolygon(coords);
+			this.drawPolygon(coords, overlayOptions);
 		}
 	}
 
@@ -115,14 +115,20 @@ RepFinder.prototype.drawBoundary = function(rows, level, reset) {
 
 
 // Given an array of LatLng coordinates, creates and draws polygons on map
-RepFinder.prototype.drawPolygon = function(coords) {
+RepFinder.prototype.drawPolygon = function(coords, options) {
+	options = options || {};
+	strokeColor = options.strokeColor || '#005468';
+	fillColor = options.fillColor || '#005468';
+	strokeOpacity = options.strokeOpacity || 0.7;
+	fillOpacity = options.fillOpacity || 0.15;
+
 	var polygon = new google.maps.Polygon({
 		paths: coords,
-		strokeColor: '#005468',
-		strokeOpacity: 0.7,
+		strokeColor: strokeColor,
+		strokeOpacity: strokeOpacity,
 		strokeWeight: 3,
-		fillColor: '#005468',
-		fillOpacity: 0.15,
+		fillColor: fillColor,
+		fillOpacity: fillOpacity,
 		clickable: false
 	});
 
