@@ -1,23 +1,24 @@
 lovegov
 =======
 
-RepFinder API
+RepFinder 1.0 API
 -------------
 
 RepFinder is a way to visualize geopolitical data for Google Maps API v3.
+
 RepFinder creates overlays using google.maps.Polygon objects.
 
 <table>
     <tr>
-        <td>RepFinder object<td>
+        <th colspan=3><strong>RepFinder object<strong><th>
     </tr>
     <tr>
         <td>Constructor</td>
-        <td>Description</td>
+        <th colspan=2>Description</th>
     </tr>
     <tr>
         <td>RepFinder(map: google.maps.Map, key: string)</td>
-        <td>Creates a RepFinder for the given map</td>
+        <th colspan=2>Creates a RepFinder for the given map</th>
     </tr>
     <tr>
         <td>Method</td>
@@ -57,8 +58,8 @@ RepFinder creates overlays using google.maps.Polygon objects.
 </table>
 
 <table>
-    <tr><td>OverlayOptions object</td><tr>
-    <tr><td>OverlayOptions has no constructor, it is implemented as an object literal</td></tr>
+    <tr><th colspan=3><strong>OverlayOptions object<strong></th><tr>
+    <tr><th colspan=3>OverlayOptions has no constructor, it is implemented as an object literal</th></tr>
     <tr>
         <td>Property</td>
         <td>Type</td>
