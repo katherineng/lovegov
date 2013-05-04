@@ -41,9 +41,9 @@ RepFinder creates overlays using google.maps.Polygon objects.
         <td>Analogous to setMap(), but takes in a jSON object of boundary data rather than a location</td>        
     </tr>
     <tr>
-        <td>drawPolygon(coords: google.maps.LatLng, opts: OverlayOptions)</td>
+        <td>drawPolygon(coords: google.maps.LatLng[], opts: OverlayOptions)</td>
         <td>void</td>
-        <td></td>
+        <td>Given an array of boundar coordinates, draws a polygon on the map</td>
     </tr>
     <tr>
         <td>clearPolygons()</td>
@@ -88,7 +88,7 @@ RepFinder creates overlays using google.maps.Polygon objects.
 </table>
 
 ### Example
-
+```javascript
     function initialize() {
 
         // initialize map
@@ -102,5 +102,5 @@ RepFinder creates overlays using google.maps.Polygon objects.
         var repFinder = new RepFinder(map, 'YOUR_API_KEY');
         ...
     };
-
+```
 
