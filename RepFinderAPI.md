@@ -89,18 +89,18 @@ RepFinder creates overlays using google.maps.Polygon objects.
 
 ### Example
 ```javascript
-    function initialize() {
+function initialize() {
 
-        // initialize map
-        var mapOptions = {
-            center: new google.maps.LatLng(38.6, -96),
-            zoom: 4,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-        var repFinder = new RepFinder(map, 'YOUR_API_KEY');
-        ...
+    // initialize map
+    var mapOptions = {
+        center: new google.maps.LatLng(38.6, -96),
+        zoom: 4,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
     };
+    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    var repFinder = new RepFinder(map, 'YOUR_API_KEY');
+    ...
+};
 ```
 
