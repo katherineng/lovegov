@@ -8,7 +8,9 @@ RepFinder is a way to visualize geopolitical data for Google Maps API v3.
 RepFinder creates overlays using google.maps.Polygon objects.
 
 <table>
-    <tr>RepFinder object</tr>
+    <tr>
+        <td>RepFinder object<td>
+    </tr>
     <tr>
         <td>Constructor</td>
         <td>Description</td>
@@ -24,27 +26,39 @@ RepFinder creates overlays using google.maps.Polygon objects.
     </tr>
     <tr>
         <td>setMap()</td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td>getReps()</td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td>drawBoundary(rows: jSON object, level: string literal, reset: boolean, opts: OverlayOptions)</td>
+        <td></td>
+        <td></td>        
     </tr>
     <tr>
         <td>drawPolygon(coords: google.maps.LatLng, opts: OverlayOptions)</td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td>clearPolygons()</td>
+        <td></td>
+        <td></td>
     </tr>
     <tr>
         <td>centerAndZoom()</td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
 
 <table>
-    <tr>OverlayOptions object<tr>
-    <tr>OverlayOptions has no constructor, it is implemented as an object literal</tr>
+    <tr><td>OverlayOptions object</td><tr>
+    <tr><td>OverlayOptions has no constructor, it is implemented as an object literal</td></tr>
     <tr>
         <td>Property</td>
         <td>Type</td>
