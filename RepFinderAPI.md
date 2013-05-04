@@ -27,33 +27,33 @@ RepFinder creates overlays using google.maps.Polygon objects.
     </tr>
     <tr>
         <td>setMap()</td>
-        <td></td>
-        <td></td>
+        <td>void</td>
+        <td>Redraws the map overlay to the geopolitical boundaries for the given LatLng position and level of representation. Recenters and zooms to the new overlay of reset arg is set to true. OverlayOptions can be used to set overlay appearance</td>
     </tr>
     <tr>
-        <td>getReps()</td>
-        <td></td>
-        <td></td>
+        <td>getReps(data: jSON object, level: string literal)</td>
+        <td>object literal</td>
+        <td>Returns a jSON object of representatives given the data from a SQL query to the lovegov servers and the level of representation</td>
     </tr>
     <tr>
         <td>drawBoundary(rows: jSON object, level: string literal, reset: boolean, opts: OverlayOptions)</td>
-        <td></td>
-        <td></td>        
+        <td>void</td>
+        <td>Analogous to setMap(), but takes in a jSON object of boundary data rather than a location</td>        
     </tr>
     <tr>
         <td>drawPolygon(coords: google.maps.LatLng, opts: OverlayOptions)</td>
-        <td></td>
+        <td>void</td>
         <td></td>
     </tr>
     <tr>
         <td>clearPolygons()</td>
-        <td></td>
-        <td></td>
+        <td>void</td>
+        <td>Clears all overlays on the map</td>
     </tr>
     <tr>
         <td>centerAndZoom()</td>
-        <td></td>
-        <td></td>
+        <td>void</td>
+        <td>Centers and zooms the map to fit the current boundary overlays drawn on the map</td>
     </tr>
 </table>
 
@@ -97,10 +97,10 @@ RepFinder creates overlays using google.maps.Polygon objects.
             zoom: 4,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-        repFinder = new RepFinder(map, 'YOUR_API_KEY');
-
+        var repFinder = new RepFinder(map, 'YOUR_API_KEY');
+        ...
     };
 
-    
+
