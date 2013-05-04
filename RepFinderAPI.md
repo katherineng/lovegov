@@ -10,15 +10,15 @@ RepFinder creates overlays using google.maps.Polygon objects.
 
 <table>
     <tr>
-        <th colspan=3><strong>RepFinder object<strong><th>
+        <td colspan=3><strong>RepFinder object</strong></td>
     </tr>
     <tr>
-        <td>Constructor</td>
-        <th colspan=2>Description</th>
+        <td><strong>Constructor</strong></td>
+        <td colspan=2><strong>Description</strong></td>
     </tr>
     <tr>
         <td>RepFinder(map: google.maps.Map, key: string)</td>
-        <th colspan=2>Creates a RepFinder for the given map</th>
+        <td colspan=2>Creates a RepFinder for the given map</td>
     </tr>
     <tr>
         <td>Method</td>
@@ -58,12 +58,12 @@ RepFinder creates overlays using google.maps.Polygon objects.
 </table>
 
 <table>
-    <tr><th colspan=3><strong>OverlayOptions object<strong></th><tr>
-    <tr><th colspan=3>OverlayOptions has no constructor, it is implemented as an object literal</th></tr>
+    <tr><td colspan=3><strong>OverlayOptions object<strong></td><tr>
+    <tr><td colspan=3>OverlayOptions has no constructor, it is implemented as an object literal</td></tr>
     <tr>
-        <td>Property</td>
-        <td>Type</td>
-        <td>Description</td>
+        <td><strong>Property</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Description</strong></td>
     </tr>
     <tr>
         <td>strokeColor</td>
@@ -89,4 +89,18 @@ RepFinder creates overlays using google.maps.Polygon objects.
 
 ### Example
 
-    code();
+    function initialize() {
+
+        // initialize map
+        var mapOptions = {
+            center: new google.maps.LatLng(38.6, -96),
+            zoom: 4,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        repFinder = new RepFinder(map, 'YOUR_API_KEY');
+
+    };
+
+    
