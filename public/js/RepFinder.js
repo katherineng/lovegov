@@ -62,8 +62,6 @@ RepFinder.prototype.getReps = function(data, level) {
 		reqUrl.push(this.currDistrict_ + '\'');
 		reqUrl.push('&key=' + this.key_);
 
-
-		var $this = this;
 		$.ajax({
 			url: reqUrl.join(''),
 			dataType: 'json',
@@ -77,37 +75,26 @@ RepFinder.prototype.getReps = function(data, level) {
 
 
 	} else if (level === 'congress') {
-		//this.currDistrict_ = data['rows'][0][3];
+		var state = data[0][2];
+		var districtId = data[0][1];
 
-		// var reqUrl = 'http://openstates.org/api/v1/legislators/geo/?lat=' + lat + '&long=' + lng + '&apikey=11ea1dfab3944f1bbe4a52701526cf7c';
+		var reqUrl =  'http://www.govtrack.us/api/v2/role?state=' + state + '&district=' + districtId;
+		console.log(reqUrl);
 
+		$.ajax({
+			url: reqUrl,
+			dataType: 'json',
+			success: function (repData) {
+				if (repData !== undefined) {
+					setReps(repData, level);
+				}
+			}
 
-		// var $this = this;
-		// $.ajax({
-		// 	url: reqUrl,
-		// 	dataType: 'jsonp',
-		// 	success: function (repData) {
-
-		// 		console.log(repData);
-		// 	}
-
-		// });
+		});
 
 
 	} else if (level == 'state') {
-		// var reqUrl = 'http://openstates.org/api/v1/legislators/geo/?lat=' + lat + '&long=' + lng + '/?apikey=11ea1dfab3944f1bbe4a52701526cf7c';
 
-
-		// var $this = this;
-		// $.ajax({
-		// 	url: reqUrl,
-		// 	dataType: 'json',
-		// 	success: function (repData) {
-
-		// 		console.log(repData);
-		// 	}
-
-		// });
 	}
 
 };

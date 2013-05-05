@@ -16,19 +16,19 @@ app.get('/boundaries.json', function(req, res) {
 
 });
 
-/*app.get('/:state/fedReps.json', function(req, res) {
-	var sql = 'SELECT name, gender, birthday, start, state, party, type FROM congress where name=\"Sheldon Whitehouse\"';
+app.get('/:district/congress.json', function(req, res) {
+	var sql = 'SELECT COUNT(*) FROM Representatives';
     var reps = [];
+
 
 	conn.query(sql)
 	.on('row', function(row){
-		console.log('hello');
     	reps.push({name: row.name, gender: row.gender, dob: row.birthday, start: row.start, state: row.state, party: row.party});
 	})
 	.on('end', function() {
     	res.json(reps);
 	});
-});*/
+});
 
 app.get('/:state/:district/stateReps.json', function(req, res) {
 	var sql = 'SELECT name, district, party, position, website FROM $1 WHERE district=$2';

@@ -134,6 +134,7 @@ function setReps(data, level) {
 			$('#reps').append(repDiv);
 		}
 	} else if (level === 'congress') {
+		console.log(data);
 
 	} else if (level === 'state') {
 
