@@ -1,4 +1,4 @@
-function RepFinder(map, key, options){
+function RepFinder(map, key, setReps, options){
 	options = options || {};
 	
 	this.classNames_ = options.classNames || {};
@@ -8,7 +8,7 @@ function RepFinder(map, key, options){
 }
 
 
-RepFinder.prototype.setMap = function(latlng, level, reset, overlayOptions) {
+RepFinder.prototype.setMap = function(latlng, level, reset, callback, overlayOptions) {
 	// Makes a SQL query depending on desired level of representation
 	if (!latlng) return;
 	
@@ -17,13 +17,13 @@ RepFinder.prototype.setMap = function(latlng, level, reset, overlayOptions) {
 
 	var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
 	
-	if (level == 'senate') {
-		url.push('sql=SELECT id, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
-	} else if (level == 'congress') {
+	if (level === 'senate') {
+		url.push('sql=SELECT id, name, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
+	} else if (level === 'congress') {
 		url.push('sql=SELECT * FROM 1QlQxBF17RR-89NCYeBmw4kFzOT3mLENp60xXAJM WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');//C_STATE = \''+ district +'\'');
-	} else if (level == 'state') {
+	} else if (level === 'state') {
 		
-	} else if (level == 'local') {
+	} else if (level === 'local') {
 		
 	}
 
@@ -39,7 +39,8 @@ RepFinder.prototype.setMap = function(latlng, level, reset, overlayOptions) {
 			var rows = data['rows'];
 			if (rows !== undefined) {
 				$this.drawBoundary(rows, level, reset, overlayOptions);
-				$this.getReps(data, level);
+				$this.getReps(rows, level);
+				callback();
 			}
 		}
 
@@ -48,18 +49,65 @@ RepFinder.prototype.setMap = function(latlng, level, reset, overlayOptions) {
 
 
 RepFinder.prototype.getReps = function(data, level) {
+	var reps = [];
 
-	$('#reps').html('');
+	// var lat = latlng.lat();
+	// var lng = latlng.lng();
 
-	if (level == 'senate') {
-		this.currDistrict_ = data['rows'][0][0];
+	if (level === 'senate') {
+		this.currDistrict_ = data[0][1];
 
-		$('#reps').append('<img class="rep" src="public/reps/sheldonwhitehouse.png" />');
-		$('#reps').append('<img class="rep" src="public/reps/johnreed.png" />');
-	} else if (level == 'congress') {
-		this.currDistrict_ = data['rows'][0][1] + '-' + data['rows'][0][0];
+		var reqUrl = ['https://www.googleapis.com/fusiontables/v1/query?'];
+		reqUrl.push('sql=SELECT * FROM 1gAGYKxV9Rm1tnFDCWbnSFapLdGGSdCRA-hhZbIw WHERE State=\'');
+		reqUrl.push(this.currDistrict_ + '\'');
+		reqUrl.push('&key=' + this.key_);
 
-		$('#reps').append('<img class="rep" src="public/reps/davidcicilline.png" />');
+
+		var $this = this;
+		$.ajax({
+			url: reqUrl.join(''),
+			dataType: 'json',
+			success: function (repData) {
+				if (repData !== undefined) {
+					setReps(repData, level);
+				}
+			}
+
+		});
+
+
+	} else if (level === 'congress') {
+		//this.currDistrict_ = data['rows'][0][3];
+
+		// var reqUrl = 'http://openstates.org/api/v1/legislators/geo/?lat=' + lat + '&long=' + lng + '&apikey=11ea1dfab3944f1bbe4a52701526cf7c';
+
+
+		// var $this = this;
+		// $.ajax({
+		// 	url: reqUrl,
+		// 	dataType: 'jsonp',
+		// 	success: function (repData) {
+
+		// 		console.log(repData);
+		// 	}
+
+		// });
+
+
+	} else if (level == 'state') {
+		// var reqUrl = 'http://openstates.org/api/v1/legislators/geo/?lat=' + lat + '&long=' + lng + '/?apikey=11ea1dfab3944f1bbe4a52701526cf7c';
+
+
+		// var $this = this;
+		// $.ajax({
+		// 	url: reqUrl,
+		// 	dataType: 'json',
+		// 	success: function (repData) {
+
+		// 		console.log(repData);
+		// 	}
+
+		// });
 	}
 
 };
@@ -81,10 +129,10 @@ RepFinder.prototype.drawBoundary = function(rows, level, reset, overlayOptions) 
 	var geometries;
 
 	if (level === 'senate') {
-		if (rows[0][1]['geometry'] != undefined) {
-			geometry = rows[0][1]['geometry'];
+		if (rows[0][2]['geometry'] != undefined) {
+			geometry = rows[0][2]['geometry'];
 		} else {
-			geometries = rows[0][1]['geometries'];
+			geometries = rows[0][2]['geometries'];
 		}
 
 	} else if (level === 'congress') {

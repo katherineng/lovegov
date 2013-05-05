@@ -13,7 +13,7 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-    repFinder = new RepFinder(map, 'AIzaSyAhFx62OwhoZwTjr8ThcmikAmgNyTiPx_Y');
+    repFinder = new RepFinder(map, 'AIzaSyAhFx62OwhoZwTjr8ThcmikAmgNyTiPx_Y', setReps);
 
     // set-up and bind autocomplete
     var input = document.getElementById('address-field');
@@ -43,7 +43,14 @@ function initialize() {
 
 	google.maps.event.addListener(marker, 'dragend', function(e) {
 		var level = $('.active').parent()[0].getAttribute('id');
-		repFinder.setMap(marker.position, level, false);
+		if (level !== 'senate') {
+			$('#loading').show();
+		}
+		repFinder.setMap(marker.position, level, false, function() {
+			if (level !== 'senate') {
+				$('#loading').hide();
+			}
+		});
 		$('#address-field').val(marker.position);
 	});
 
@@ -101,8 +108,36 @@ function addressSearch() {
 
 function updateMap(latLng, reset) {
 	var level = $('.active').parent()[0].getAttribute('id');
-	repFinder.setMap(latLng, level, reset);
+	if (level !== 'senate') {
+		$('#loading').show();
+	}
+	repFinder.setMap(latLng, level, reset, function() {
+		if (level !== 'senate') {
+			$('#loading').hide();
+		}
+	});
 	marker.setPosition(latLng);
+}
+
+function setReps(data, level) {
+	$('#reps').html('');
+
+	if (level === 'senate') {
+		var numReps = data['rows'].length;
+		for (var i = 0; i < numReps; i++) {
+			var repDiv = '<div class="rep">' + 
+						'<a href="' + data['rows'][i][6] + '" target="_blank">' +
+						'<img class="repPic" src="' + data['rows'][i][3] + '" /></a><br>' +
+						data['rows'][i][0] + ' [<span class="'+ data['rows'][i][2] +'">' + data['rows'][i][2] + '</span>]' +
+						'</div>';
+
+			$('#reps').append(repDiv);
+		}
+	} else if (level === 'congress') {
+
+	} else if (level === 'state') {
+
+	}
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -118,7 +153,14 @@ $(document).ready(function() {
 		$(this).addClass('active');
 
 		var level = $('.active').parent()[0].getAttribute('id');
-		repFinder.setMap(marker.position, level, true);
+		if (level !== 'senate') {
+			$('#loading').show();
+		}
+		repFinder.setMap(marker.position, level, true, function() {
+			if (level !== 'senate') {
+				$('#loading').hide();
+			}
+		});
 	});
 });
 
