@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <title>LoveGov: RepFinder 1.0</title>
+        <script type="text/javascript" src="public/js/jquery-1.9.1.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhFx62OwhoZwTjr8ThcmikAmgNyTiPx_Y&libraries=places&sensor=true" type="text/javascript"></script>
+        <script type="text/javascript" src="public/js/ContextMenu.js"></script>
+        <script type="text/javascript" src="public/js/RepFinder.js"></script>
+        <script type="text/javascript" src="public/js/map.js"></script>
+        <link rel="stylesheet" type="text/css" href="public/css/style-base.css" />
+        <link rel="stylesheet" type="text/css" href="public/css/maps-style.css" />
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="main-container">
+                <div id="search-container">
+                    <form method="POST" action="/location" id="address-form">
+                        <input type="text" class="text-field" name="address" placeholder="Enter address here" id="address-field">
+                        <input type="submit" value="search" id="search-submit">
+                    </form>
+                </div>
+                
+                <div id="map-container">
+                    <div id="map-canvas"></div>
+                    <div id="loading"><img src="public/ajax-loader.gif" /></div>
+                </div>
+                
+                <div id="reps-container">
+                    <ul id="levels">
+                        <li id="senate" class="level"><a href="#" class="active"><h2>Senate</h2></a></li>
+                        <li id="congress" class="level"><a href="#"><h2>Congress</h2></a></li>
+                        <li id="state" class="level"><a href="#"><h2>State</h2></a></li>
+                    </ul>
+                    <div id="reps">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
