@@ -30,16 +30,16 @@ app.get('/:district/congress.json', function(req, res) {
 	});
 });
 
-app.get('/:state/:district/stateReps.json', function(req, res) {
-	var sql = 'SELECT name, district, party, position, website FROM $1 WHERE district=$2';
+app.get('/:state/:district/reps.json', function(req, res) {
+	var sql = 'SELECT * FROM Representatives WHERE state=$1 AND district=$2';
     var reps = [];
 
-	conn.query(sql, [request.params.state, request.params.district])
+	conn.query(sql, [req.params.state, req.params.district])
 	.on('row', function(row){
-    	reps.push({name: row.name, party: row.party, position: row.position, website: row.website});
+    	reps.push({name: row.name, gender: row.gender, dob: row.birthday, start: row.start, state: row.state, party: row.party});
 	})
 	.on('end', function() {
-    	response.json(reps);
+    	res.json(reps);
 	});
 });
 

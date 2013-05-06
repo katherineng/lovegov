@@ -78,8 +78,7 @@ RepFinder.prototype.getReps = function(data, level) {
 		var state = data[0][2];
 		var districtId = data[0][1];
 
-		var reqUrl =  'http://www.govtrack.us/api/v2/role?state=' + state + '&district=' + districtId;
-		console.log(reqUrl);
+		var reqUrl = '/' + state + '/' + districtId + '/reps.json';
 
 		$.ajax({
 			url: reqUrl,
