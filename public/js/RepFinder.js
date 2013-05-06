@@ -16,7 +16,7 @@ RepFinder.prototype.setMap = function(latlng, level, reset, callback, overlayOpt
 	
 	if (level === 'senate') {
 		url.push('sql=SELECT id, name, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
-	} else if (level === 'congress') {
+	} else if (level === 'house') {
 		url.push('sql=SELECT * FROM 1QlQxBF17RR-89NCYeBmw4kFzOT3mLENp60xXAJM WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');//C_STATE = \''+ district +'\'');
 	} else if (level === 'state-upper') {
 		url.push('sql=SELECT name, geometry FROM 1mGZ3HHNwgO6_RDm2SWMPcVkstt7TSPc6xfBbxEQ WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
@@ -71,7 +71,7 @@ RepFinder.prototype.getReps = function(data, level) {
 		});
 
 
-	} else if (level === 'congress') {
+	} else if (level === 'house') {
 		var state = data[0][2];
 		var districtId = data[0][1];
 
@@ -132,7 +132,7 @@ RepFinder.prototype.drawBoundary = function(rows, level, reset, overlayOptions) 
 			geometries = rows[0][2]['geometries'];
 		}
 
-	} else if (level === 'congress') {
+	} else if (level === 'house') {
 		if (rows[0][5]['geometry'] != undefined) {
 			geometry = rows[0][5]['geometry'];
 		} else {
