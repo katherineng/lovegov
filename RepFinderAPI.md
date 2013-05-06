@@ -17,8 +17,8 @@ RepFinder creates overlays using google.maps.Polygon objects.
         <td colspan=2><strong>Description</strong></td>
     </tr>
     <tr>
-        <td>RepFinder(map: google.maps.Map, key: string)</td>
-        <td colspan=2>Creates a RepFinder for the given map</td>
+        <td>RepFinder(map: google.maps.Map, key: string, setReps: function)</td>
+        <td colspan=2>Creates a RepFinder for the given map. Uses the setReps function to update the containing page with the representative data</td>
     </tr>
     <tr>
         <td>Method</td>
@@ -26,7 +26,7 @@ RepFinder creates overlays using google.maps.Polygon objects.
         <td>Description</td>
     </tr>
     <tr>
-        <td>setMap()</td>
+        <td>setMap(latlng: google.maps.LatLng, level: string literal, reset: boolean, callback: function, opts: OverlayOptions)</td>
         <td>void</td>
         <td>Redraws the map overlay to the geopolitical boundaries for the given LatLng position and level of representation. Recenters and zooms to the new overlay of reset arg is set to true. OverlayOptions can be used to set overlay appearance</td>
     </tr>
