@@ -37,8 +37,9 @@ RepFinder.prototype.setMap = function(latlng, level, reset, callback, overlayOpt
 			if (rows !== undefined) {
 				$this.drawBoundary(rows, level, reset, overlayOptions);
 				$this.getReps(rows, level);
-				callback();
 			}
+
+			callback();
 		}
 
 	});

@@ -13,6 +13,8 @@ To run the server on port 8080:
 node server.js
 ```
 
+__NOTE__ State legislature data is currently only available for Rhode Island in the demo. U.S. Senate and House data is available for all states
+
 RepFinder 1.0 API
 -------------
 

@@ -52,7 +52,7 @@ app.get('/', function(request, response){
 });
 
 
-app.listen(1234, function() {
-    console.log('- Server listening on port 1234');
+app.listen(8080, function() {
+    console.log('- Server listening on port 8080');
 });
 
