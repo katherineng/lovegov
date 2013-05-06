@@ -1,7 +1,4 @@
-function RepFinder(map, key, setReps, options){
-	options = options || {};
-	
-	this.classNames_ = options.classNames || {};
+function RepFinder(map, key, setReps){
 	this.map_ = map;
 	this.key_ = key;
 	this.polygons_ = [];

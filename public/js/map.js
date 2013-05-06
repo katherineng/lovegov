@@ -13,6 +13,11 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
+    // restrict zoom
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+     	if (map.getZoom() < 2) map.setZoom(2);
+   	});
+
     repFinder = new RepFinder(map, 'AIzaSyAhFx62OwhoZwTjr8ThcmikAmgNyTiPx_Y', setReps);
 
     // set-up and bind autocomplete
@@ -124,9 +129,12 @@ function setReps(data, level) {
 
 	if (level === 'senate') {
 		var numReps = data['rows'].length;
+
 		for (var i = 0; i < numReps; i++) {
+			var profile = data['rows'][i][0].toLowerCase().replace(' ', '_');
+			
 			var repDiv = '<div class="rep">' + 
-						'<a href="' + data['rows'][i][6] + '" target="_blank">' +
+						'<a href="http://lovegov.com/' + profile + '" target="_blank">' +
 						'<img class="repPic" src="' + data['rows'][i][3] + '" /></a><br>' +
 						data['rows'][i][0] + ' [<span class="'+ data['rows'][i][2] +'">' + data['rows'][i][2] + '</span>]' +
 						'</div>';
