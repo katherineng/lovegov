@@ -16,7 +16,7 @@ RepFinder 1.0 API
 
 RepFinder is a way to visualize geopolitical data for Google Maps API v3.
 
-RepFinder creates overlays using google.maps.Polygon objects.
+RepFinder creates overlays using [google.maps.Polygon](https://developers.google.com/maps/documentation/javascript/overlays#Polygons) objects.
 
 <table>
     <tr>
