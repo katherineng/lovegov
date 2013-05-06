@@ -117,3 +117,22 @@ function initialize() {
 
 Context Menu Plugin:
 http://code.martinpearman.co.uk/googlemapsapi/contextmenu/
+
+
+We used sqlite3 for our political database, accessed through Python, and google fusion tables for our geospatial database.
+We had orginally planned to use GeoDjango for our spatial database but we were unable to successfully set up the frameworks
+needed to use the service.
+
+Rather than entering the data for each state's politicians by hand, we wrote a web scraper gets the relevant information 
+for every politician at the national and state level and inserts it into a sqlite database. This will allow for future
+users of our program to easily update and obtain this political data
+
+To create the spatial database, we downloaded shape files for every state, state congressional district and state legislative
+district and converted them to .kml files using GQIS. We then uplaoded these kml files to google fusion tables.
+
+We run spatial queries on the tables created for each layer of geopolitical region (state, congressional, legislative) with
+SQL commands, specifically ST_INTERSECTS.
+
+We originally uploaded all the geopolitical data into a single fusion table however spatial queries took too long. We will
+be creating separate fusion tables for each state's congressional districts and legislative districts. 
+
