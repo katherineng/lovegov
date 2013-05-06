@@ -2,15 +2,14 @@ lovegov
 =======
 
 To install packages before running server:
-	npm install
+```
+npm install
+```
 
-
-To run the server:
-	node server.js
-
-To view the site:
-http://localhost:8080/
-
+To run the server on port 8080:
+```
+node server.js
+```
 
 Context Menu Plugin:
 http://code.martinpearman.co.uk/googlemapsapi/contextmenu/
