@@ -2,6 +2,7 @@ import sqlite3
 import yaml
 import string
 import os
+import xlrd
 import urllib2
 from bs4 import BeautifulSoup
 
@@ -11,7 +12,6 @@ states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
 def loadData():
     conn = sqlite3.connect('congress.db')
     c = conn.cursor()
-
     for i in range (0, len(states)-1):
         c.execute('CREATE TABLE '+states[i]+' (name text, district text, party text, position text, website text)')
         for k in range(0, 2):
@@ -26,6 +26,7 @@ def loadData():
             districtIndex = -1
             partyIndex = -1
             nameIndex = -1
+            start = 1
             x = 0
             if (((states[i]=="Virginia") or (states[i]=="West_Virginia")) and (branch == "_House_of_Representatives")):
                 tds = soup.find_all('td')
@@ -43,6 +44,7 @@ def loadData():
                     x+=1
             elif (string.find(str(table),"wikitable collapsible sortable")!=-1):
                 x =1
+                start = 2
                 while(partyIndex ==-1 or nameIndex==-1 or districtIndex==-1):
                     thsSoup = BeautifulSoup(str(ths[x]))
                     for text in thsSoup.findAll(text=True):
@@ -69,10 +71,7 @@ def loadData():
                         districtIndex = x
                     x+=1
             trs = soup.find_all('tr')
-            temp = 2
-            if (states[i]=="Virginia" and branch=="_House_of_Representatives"):
-                temp = 1
-            for y in range (temp,len(trs)-1):
+            for y in range (start,len(trs)-1):
                 tempSoup = BeautifulSoup(str(trs[y]))
                 tds = tempSoup.find_all('td')
                 for z in range (0,len(tds)-1):
@@ -95,24 +94,6 @@ def loadData():
                         for text in cellSoup.findAll(text=True):
                             district = text
                             break
-                if (party=="Rep"):
-                    party = "Republican"
-                elif (party=="Dem"):
-                    party = "Democrat"
-                elif (party.find("Democrat")!=-1):
-                    party = "Democrat"
-                elif (party=="R"):
-                    party = "Republican"
-                elif (party=="D"):
-                    party = "Democrat"
-                elif (party=="Template:Red dot"):
-                    party = "Republican"
-                elif (party=="Template:Blue dot"):
-                    party = "Democrat"
-                elif (party=="Ind"):
-                    party = "Independent"
-                elif (party=="Prog"):
-                    party = "Progressive"
                 district = district.strip(string.whitespace)
                 link = "http://ballotpedia.org"+link
                 if (branch=="_House_of_Representatives"):
@@ -143,9 +124,43 @@ def buildTable(state, branch):
 def showTables():
     conn = sqlite3.connect('congress.db')
     c = conn.cursor()
-    list = c.execute('SELECT * FROM sqlite_master WHERE type="table"')
+    #list = c.execute('SELECT * FROM sqlite_master WHERE type="table"')
+    list = c.execute('SELECT * FROM California')
     for item in list:
         print item
+
+def nationalCongress():
+    stream = open("congress_current.yaml", 'r')
+    congress = yaml.load(stream)
+    stream.close()
+    conn = sqlite3.connect('congress.db')
+    c = conn.cursor()
+    c.execute('DROP TABLE Representatives')
+    c.execute('DROP TABLE Senators')
+    c.execute('CREATE TABLE Representatives (name text, gender text, birthday text, start text, state text, party text, district text)')
+    c.execute('CREATE TABLE Senators (name text, gender text, birthday text, start text, state text, party text)')
+    for item in congress:
+        name = item["name"]["first"]+" "+item["name"]["last"]
+        gender = item["bio"]["gender"]
+        if (gender=="F"):
+            gender = "Female"
+        else:
+            gender = "Male"
+        birthday = item["bio"]["birthday"].strip("'")
+        start = item["terms"][0]["start"].strip("'")
+        state = item["terms"][0]["state"]
+        party = item["terms"][0]["party"]
+        party = str(party)
+        gender = str(gender)
+        birthday = str(birthday)
+        start = str(start)
+        if (item["terms"][0]["type"]=="rep"):
+            district = item["terms"][0]["district"]
+            district = str(district)
+            c.execute('INSERT INTO Representatives VALUES (?,?,?,?,?,?,?)', (name, gender, birthday, start, state, party, district))
+        if (item["terms"][0]["type"]=="sen"):
+            c.execute('INSERT INTO Senators VALUES (?,?,?,?,?,?)', (name, gender, birthday, start, state, party))
+        conn.commit()
 
 def addNebraska():
     conn = sqlite3.connect('congress.db')
@@ -188,4 +203,6 @@ def addNebraska():
         link = "http://ballotpedia.org"+link
         c.execute('INSERT INTO Nebraska VALUES (?,?,?,?)', (name, district, "Senator", link))
 
-loadData()
+#loadData()
+#nationalCongress()
+showTables()
