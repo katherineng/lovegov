@@ -157,8 +157,39 @@ function setReps(data, level) {
 			$('#reps').append(repDiv);
 		}
 
-	} else if (level === 'state') {
+	} else if (level === 'state-upper') {
+		var numReps = data.length;
+		for (var i = 0; i < numReps; i++) {
+			if (data[i]['position'] === "Senator") {
+				var name = data[i]['name'];
+				var profile = data[i]['website'];
 
+				var repDiv = '<div class="rep">' + 
+							'<a href="' + profile + '" target="_blank">' +
+							'<img class="repPic" src="public/reps/placeholder.png" /></a><br>' +
+							name + ' [<span class="'+ data[i]['party'].substring(0, 1) +'">' + data[i]['party'].substring(0, 1) + '</span>]' +
+							'</div>';
+
+				$('#reps').append(repDiv);
+			}
+		}
+
+	} else if (level === 'state-lower') {
+		var numReps = data.length;
+		for (var i = 0; i < numReps; i++) {
+			if (data[i]['position'] !== "Senator") {
+				var name = data[i]['name'];
+				var profile = data[i]['website'];
+
+				var repDiv = '<div class="rep">' + 
+							'<a href="' + profile + '" target="_blank">' +
+							'<img class="repPic" src="public/reps/placeholder.png" /></a><br>' +
+							name + ' [<span class="'+ data[i]['party'].substring(0, 1) +'">' + data[i]['party'].substring(0, 1) + '</span>]' +
+							'</div>';
+
+				$('#reps').append(repDiv);
+			}
+		}
 	}
 }
 

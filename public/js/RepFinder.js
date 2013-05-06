@@ -18,10 +18,10 @@ RepFinder.prototype.setMap = function(latlng, level, reset, callback, overlayOpt
 		url.push('sql=SELECT id, name, geometry FROM 17aT9Ud-YnGiXdXEJUyycH2ocUqreOeKGbzCkUw WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
 	} else if (level === 'congress') {
 		url.push('sql=SELECT * FROM 1QlQxBF17RR-89NCYeBmw4kFzOT3mLENp60xXAJM WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');//C_STATE = \''+ district +'\'');
-	} else if (level === 'state') {
-		
-	} else if (level === 'local') {
-		
+	} else if (level === 'state-upper') {
+		url.push('sql=SELECT name, geometry FROM 1mGZ3HHNwgO6_RDm2SWMPcVkstt7TSPc6xfBbxEQ WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
+	} else if (level === 'state-lower') {
+		url.push('sql=SELECT name, geometry FROM 1X6LzkKHqx79sK7IEzIVnM6sRhdS_1wMiy7_R08w WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(' + lat + ', ' + lng + '), 1))');
 	}
 
 	url.push('&key=' + this.key_);
@@ -89,10 +89,24 @@ RepFinder.prototype.getReps = function(data, level) {
 		});
 
 
-	} else if (level == 'state') {
+	} else if (level == 'state-upper' || level == 'state-lower') {
+		//var state = data[0][2];
+		var districtId = data[0][0];
 
-	}
+		var reqUrl = '/Rhode_Island/' + districtId + '/legislature.json';
 
+		$.ajax({
+			url: reqUrl,
+			dataType: 'json',
+			success: function (repData) {
+				if (repData !== undefined) {
+					setReps(repData, level);
+				}
+			}
+
+		});
+
+	} 
 };
 
 // Given the result of a SQL query and the level of representation, draws the district boundaries
@@ -123,6 +137,12 @@ RepFinder.prototype.drawBoundary = function(rows, level, reset, overlayOptions) 
 			geometry = rows[0][5]['geometry'];
 		} else {
 			geometries = rows[0][5]['geometries']
+		}
+	} else if (level === 'state-upper' || level === 'state-lower') {
+		if (rows[0][1]['geometry'] != undefined) {
+			geometry = rows[0][1]['geometry'];
+		} else {
+			geometries = rows[0][1]['geometries']
 		}
 	}
 

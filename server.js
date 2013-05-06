@@ -16,14 +16,18 @@ app.get('/boundaries.json', function(req, res) {
 
 });
 
-app.get('/:district/congress.json', function(req, res) {
-	var sql = 'SELECT COUNT(*) FROM Representatives';
+app.get('/:state/:district/legislature.json', function(req, res) {
+	var sql = 'SELECT * FROM ' + req.params.state + ' WHERE district=$1';
     var reps = [];
 
 
-	conn.query(sql)
+	conn.query(sql, [req.params.district])
 	.on('row', function(row){
-    	reps.push({name: row.name, gender: row.gender, dob: row.birthday, start: row.start, state: row.state, party: row.party});
+		if (req.params.state !== 'Nebraska') {
+    		reps.push({name: row.name, district: row.district, party: row.party, position: row.position, website: row.website});
+    	} else {
+    		reps.push({name: row.name, district: row.district, position: row.position, website: row.website});
+    	}
 	})
 	.on('end', function() {
     	res.json(reps);
@@ -43,20 +47,12 @@ app.get('/:state/:district/reps.json', function(req, res) {
 	});
 });
 
-/*app.get('/:repName', function(req, res) {
-	console.log('wtf');
-	var repName = request.params.repName;
-	if (repName !== 'favicon.ico') {
-    		response.render('rep.html', {repName: request.params.repName});
-	}
-});*/
-
 app.get('/', function(request, response){
 	response.render('index.html');
 });
 
 
-app.listen(8080, function() {
-    console.log('- Server listening on port 8080');
+app.listen(1234, function() {
+    console.log('- Server listening on port 1234');
 });
 
