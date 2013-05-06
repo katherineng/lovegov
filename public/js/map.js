@@ -134,7 +134,20 @@ function setReps(data, level) {
 			$('#reps').append(repDiv);
 		}
 	} else if (level === 'congress') {
-		console.log(data);
+
+		var numReps = data.length;
+		for (var i = 0; i < numReps; i++) {
+			var name = data[i]['name'];
+			var profile = name.toLowerCase().replace(' ', '_');
+
+			var repDiv = '<div class="rep">' + 
+						'<a href="http://lovegov.com/' + profile + '" target="_blank">' +
+						'<img class="repPic" src="public/reps/placeholder.png" /></a><br>' +
+						name + ' [<span class="'+ data[i]['party'].substring(0, 1) +'">' + data[i]['party'].substring(0, 1) + '</span>]' +
+						'</div>';
+
+			$('#reps').append(repDiv);
+		}
 
 	} else if (level === 'state') {
 
@@ -150,11 +163,12 @@ $(document).ready(function() {
 		addressSearch();
 	});
 	$('.level a').click(function(e) {
+		e.preventDefault();
 		$('.level a').removeClass('active');
 		$(this).addClass('active');
 
 		var level = $('.active').parent()[0].getAttribute('id');
-		if (level !== 'senate') {
+		if (level !== 'senate' && marker.position !== undefined) {
 			$('#loading').show();
 		}
 		repFinder.setMap(marker.position, level, true, function() {
